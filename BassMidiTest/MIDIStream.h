@@ -10,19 +10,15 @@
 #import "bassmidi.h"
 
 @interface MIDIStream : NSObject{
- //   HSTREAM *streamHandle;
-    NSString *fullPath;
-    NSString *fileName;
-    NSString *songName;
-    NSString *copyrightInfo;
-  //unsigned int *handle;
+
 }
 
 //@property(readonly,nonatomic,nullable) HSTREAM *stereamHandle;
-@property(readonly,nonatomic,nullable) NSString  *fullPath;
-@property(readonly,nonatomic,nullable) NSString  *fileName;
-@property(readonly,nonatomic,nullable) NSString  *songName;
-@property(readonly,nonatomic,nullable) NSString  *copyrightInfo;
+@property(nonatomic,nullable) NSString  *fullPath;
+@property(nonatomic,nullable) NSString  *fileName;
+@property(nonatomic,nullable) NSString  *songName;
+@property(nonatomic,nullable) NSString  *copyrightInfo;
+@property(nonatomic,nullable) BASS_MIDI_FONTINFO *SoundFontInfo;
 //@property(readonly,nonatomic,nullable) unsigned  int *handle;
 +(id _Nullable )initMyClass;
 +(unsigned int)HiWord:(unsigned int)Dword;
@@ -37,7 +33,9 @@
 -(void)Pause;
 -(unsigned int)GetLevel;
 -(void)ReleaseCurrentSoundFont;
--(BOOL)SetSoundFont:(HSOUNDFONT*_Nonnull)sf;
+-(void)LoadSoundFont:(NSString *_Nonnull)Path;
+-(BOOL)SetSoundFont;
+//-(void)GetSoundFontInfo;
 -(NSInteger)GetCurrentPosition;
 -(NSInteger)GetStreamLength;
 -(NSInteger)SetCurrentPosition:(int)val;

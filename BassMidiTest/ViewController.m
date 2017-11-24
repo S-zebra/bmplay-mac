@@ -24,12 +24,12 @@ NSArray *typeMidi,*typeSF2;
 
 - (void)viewDidLoad {
   [super viewDidLoad];
+  
   typeMidi=[NSArray arrayWithObjects:@"mid",@"midi" ,nil];
   typeSF2=[NSArray arrayWithObjects:@"sf2",@"sfz", nil];
   openWindow=[NSOpenPanel new];
+  
   BOOL res=BASS_Init(-1, 44100, 0, NULL, NULL);
-  //BASS_SetConfig(BASS_CONFIG_BUFFER, 2);
-  //BASS_SetConfig(BASS_CONFIG_MIXER_BUFFER, 1);
   NSLog(@"Bass Init: %s",res?"OK":"NG");
   // Do any additional setup after loading the view.
 }
@@ -41,17 +41,16 @@ NSArray *typeMidi,*typeSF2;
   NSString *fpString;
   if([openWindow runModal]==NSModalResponseOK){
     filePath =[openWindow URL];
-    fpString=[[filePath.absoluteString stringByReplacingOccurrencesOfString:@"file://" withString:@""] stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
+    fpString=[filePath.absoluteString stringByReplacingOccurrencesOfString:@"file://" withString:@""];
 
     if(![myStream hasStream]){
-     myStream=MIDIStream.new;
+      myStream=[MIDIStream new];
     }
     [myStream Load:fpString];
 
- 
-    if(myStream.hasStream){
+    if([myStream hasStream]){
       //On Success
-      [MidiFilePathLbl setStringValue:[NSString stringWithFormat:@"%@ - %@",[myStream songName],[filePath lastPathComponent]]];
+      [MidiFilePathLbl setStringValue:[NSString stringWithFormat:@"%@ - %@",myStream.songName,[filePath lastPathComponent]]];
     }else{
       //On Error
       [MidiFilePathLbl setStringValue:[@"Error: " stringByAppendingString:[NSString stringWithFormat: @"%d",BASS_ErrorGetCode()]]];
@@ -65,34 +64,32 @@ NSArray *typeMidi,*typeSF2;
   [openWindow setAllowedFileTypes:typeSF2];
   NSURL *Url;
   NSString *Path;
-  HSOUNDFONT sf;
-  BASS_MIDI_FONTINFO fi;
+  BASS_MIDI_FONTINFO *fi;
   if([openWindow runModal]==NSModalResponseOK){
     Url=openWindow.URL;
     Path=[[Url.absoluteString stringByReplacingOccurrencesOfString:@"file://" withString:@""] stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
-    
-    //Should be extern
-    sf=BASS_MIDI_FontInit([Path UTF8String], 0);
-    BASS_MIDI_FontGetInfo(sf, &fi);
-    BASS_MIDI_FontLoad(sf, -1, -1);
-    //to here...
-    
-    [myStream ReleaseCurrentSoundFont];
-    [myStream SetSoundFont:&sf];
-    if (sf>0){
-      [SfNameLbl setStringValue:[NSString stringWithCString: fi.name encoding:NSUTF8StringEncoding]];
-      NSLog(@"SoundFont OK,　name: %s, loaded %d",fi.name,fi.samload);
+    if(myStream==nil){
+      myStream=[MIDIStream new];
+    }
+    [myStream LoadSoundFont:Path];
+    fi=myStream.SoundFontInfo;
+
+    if (BASS_ErrorGetCode()==0){
+      [SfNameLbl setStringValue:[NSString stringWithCString: fi->name encoding:NSUTF8StringEncoding]];
+      NSLog(@"SoundFont OK,　name: %s, loaded %d",fi->name,fi->samload);
     }else{
       NSLog(@"SoundFont Error: %d",BASS_ErrorGetCode());
     }
   }
 }
+
 -(IBAction)PpMaxSliderSlided:(id)sender{
-  int a=[PpMaxSlider integerValue];
+  int a=(int)[PpMaxSlider integerValue];
   [PpMaxLbl setStringValue:[NSString stringWithFormat:@"%d",a]];
   [PpCurBar setMaxValue:(double)a];
   [myStream SetMaxPp:a];
 }
+
 -(IBAction)CpuMaxSliderSlided:(id)sender{
   int a=[CpuMaxSlider doubleValue];
   if(a==101){
@@ -103,32 +100,35 @@ NSArray *typeMidi,*typeSF2;
     [myStream SetMaxCpuLoad:a];
   }
 }
+
 -(IBAction)PlayPauseBtnToggled:(id)sender{
   if([PlayPauseBtn state]==NSOnState){
     NSLog(@"Play: %d",[myStream Play]);
     NSLog(@"Started playing: %d",BASS_ErrorGetCode());
-    _timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(time:) userInfo:nil repeats:YES];
+    _timer = [NSTimer scheduledTimerWithTimeInterval:0.064 target:self selector:@selector(time:) userInfo:nil repeats:YES];
   }else{
     [myStream Pause];
   }
 }
+
 -(IBAction)SongPositionSliderSlided:(id)sender{
-  [myStream SetCurrentPosition:[SongPositionSlider integerValue]];
+  [myStream SetCurrentPosition:(int)[SongPositionSlider integerValue]];
 }
+
 -(IBAction)VolSliderChanged:(id)sender{
   float val=[VolSlider doubleValue];
   [CurVolLbl setStringValue:[NSString stringWithFormat:@"%d",(int)val]];
   val/=100;
   [myStream SetVolume:val];
 }
+
 -(IBAction)time:(NSTimer*)timer{
   long curpp,curcpu;
   unsigned int lev=[myStream GetLevel];
-  double leftlev,rightlev;
   curpp=(long)[myStream GetCurrentPolyphony];
   curcpu=(long)[myStream GetCurrentCpuLoad];
-  NSInteger *pos=[myStream GetCurrentPosition];
-  //NSLog(@"%d - %d/%ld",BASS_ErrorGetCode(),pos,(long)[myStream GetStreamLength]);
+  int pos=(int)[myStream GetCurrentPosition];
+  
   [SongPositionSlider setIntValue:pos];
   
   [Level_L setDoubleValue:(double)abs(LoWord(lev))];
@@ -152,6 +152,16 @@ NSArray *typeMidi,*typeSF2;
   [Level_L setDoubleValue:0.0];
   [Level_R setDoubleValue:0.0];
 }
+-(IBAction)FXCheckChanged:(id)sender{
+  if([FXCheckBox state]==NSOnState){
+    NSLog(@"FX On");
+    [myStream cancelFlag:BASS_MIDI_NOFX];
+  }else if([FXCheckBox state]==NSOffState){
+    [myStream setFlag:BASS_MIDI_NOFX];
+    NSLog(@"FX Off");
+  }
+}
+
 - (void)setRepresentedObject:(id)representedObject {
   [super setRepresentedObject:representedObject];
 

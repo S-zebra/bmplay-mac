@@ -12,11 +12,13 @@
 
 @implementation MIDIStream
 
-unsigned int streamHandle;
-unsigned int streamFlags=BASS_MIDI_DECAYEND;
+HSTREAM streamHandle;
+//デフォルトフラグ
+unsigned int streamFlags=BASS_MIDI_DECAYEND|BASS_SAMPLE_FLOAT;
 int numTracks;
 HSOUNDFONT sfHandle=0;
-BASS_MIDI_FONT f;
+BASS_MIDI_FONT SoundFonts[1];
+BASS_MIDI_FONTINFO SFInfo;
 
 float sfVol=1.0;
 float maxCpu=70;
@@ -49,7 +51,7 @@ float data[512];
 }
 -(void)applyFlag{
   if([self hasStream]){
-    BASS_ChannelFlags(streamHandle, streamFlags, streamFlags);
+    BASS_ChannelFlags(streamHandle, streamFlags, INT_MAX);
   }
 }
 
@@ -61,25 +63,26 @@ float data[512];
   if(streamHandle!=0){
     BASS_StreamFree(streamHandle);
   }
-  
-  
-  streamHandle=BASS_MIDI_StreamCreateFile(false,[FilePath UTF8String], 0, 0, streamFlags, 1);
+  streamHandle=BASS_MIDI_StreamCreateFile(false, [[FilePath stringByRemovingPercentEncoding] UTF8String], 0, 0, streamFlags, 1);
+  NSLog(@"%@ Result: %d", [FilePath stringByRemovingPercentEncoding], BASS_ErrorGetCode());
 
   //Get the song name
   BASS_MIDI_MARK mk;
   BASS_MIDI_StreamGetMark(streamHandle, BASS_MIDI_MARK_TRACK, 0, &mk);
-  songName=[NSString stringWithFormat:@"%s", mk.text];
+  if(mk.text==NULL||strlen(mk.text)==0){
+    self.songName=@"(NO TITLE)";
+  }else{
+    self.songName=[NSString stringWithFormat:@"%s", mk.text];
+  }
   
   //If already soundfont is set
   if(sfHandle!=0){
-    BASS_MIDI_StreamSetFonts(streamHandle, &f, 1);
-    [self SetVolume:sfVol];
+    [self SetSoundFont];
   }
 
   [self SetMaxPp:maxPp];
   [self SetMaxCpuLoad:maxCpu];
-  
-  
+
   while(BASS_ChannelGetAttribute(streamHandle, BASS_ATTRIB_MIDI_TRACK_VOL+tks, &d)){
     tks++;
   }
@@ -89,7 +92,6 @@ float data[512];
 }
 
 -(BOOL)Play{
-  //NSLog(@"Position: %llu",BASS_ChannelGetPosition(streamHandle,BASS_POS_MIDI_TICK));
   return BASS_ChannelPlay(streamHandle, false);
 }
 
@@ -105,22 +107,34 @@ float data[512];
 -(unsigned int)GetLevel{
   return BASS_ChannelGetLevel(streamHandle);
 }
+
 -(void)ReleaseCurrentSoundFont{
   if(sfHandle!=0){
     BASS_MIDI_FontFree(sfHandle);
   }
 }
+-(void)LoadSoundFont:(NSString*)Path{
+  NSLog(@"%s", [Path UTF8String]);
+  sfHandle=BASS_MIDI_FontInit([Path UTF8String], 0);
+  BASS_MIDI_FontGetInfo(sfHandle, &SFInfo);
+  _SoundFontInfo=&SFInfo;
+  [self SetSoundFont];
+}
 
--(BOOL)SetSoundFont:(HSOUNDFONT *)sf{
-  sfHandle=*sf;
-  f.font=*sf;
-  f.preset=-1;
-  f.bank=0;
-  [self SetVolume:sfVol];
-  if(streamHandle!=0){
-   return BASS_MIDI_StreamSetFonts(streamHandle, &f, 1);
+-(BOOL)SetSoundFont{
+  if(sfHandle!=0){
+    SoundFonts[0].font=sfHandle;
+    SoundFonts[0].preset=-1;
+    SoundFonts[0].bank=0;
+    [self SetVolume:sfVol];
+    if(streamHandle!=0){
+      return BASS_MIDI_StreamSetFonts(streamHandle, &SoundFonts, 1);
+    }else{
+      return 1;
+    }
   }else{
-    return 1;
+    NSLog(@"SoundFont is not loaded, or error.");
+    return false;
   }
 }
 
@@ -144,9 +158,6 @@ float data[512];
 -(void)SetVolume:(float)vol{
   sfVol=vol;
   NSLog(@"Volume is set to: %lf",vol);
-  //for(int i=0;i<numTracks;i++){
-    //BASS_ChannelSetAttribute((DWORD)streamHandle, BASS_ATTRIB_MIDI_TRACK_VOL+i, vol);
-  //}
   BASS_MIDI_FontSetVolume(sfHandle, sfVol);
 }
 -(void)SetMaxCpuLoad:(float)cpuLoad{
@@ -169,4 +180,3 @@ float data[512];
 
 @synthesize fullPath,fileName,songName,copyrightInfo;
 @end
-  

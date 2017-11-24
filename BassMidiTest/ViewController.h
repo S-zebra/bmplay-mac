@@ -29,7 +29,7 @@
   IBOutlet NSSlider *SongPositionSlider;
   IBOutlet NSTextField *CurVolLbl;
   IBOutlet NSSlider *VolSlider;
-  IBOutlet NSButton *ExportCB;
+  IBOutlet NSButton *FXCheckBox;
 }
 -(IBAction)MidiFileOpenBtnClicked;
 -(IBAction)SfReplaceBtnClicked;
@@ -39,6 +39,6 @@
 -(IBAction)CpuMaxSliderSlided;
 -(IBAction)VolSliderChanged;
 -(IBAction)SongPositionSliderSlided;
--(IBAction)ExportChecked;
+-(IBAction)FXCheckChanged;
 @end
 
