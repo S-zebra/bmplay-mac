@@ -30,6 +30,7 @@ NSArray *typeMidi,*typeSF2;
   openWindow=[NSOpenPanel new];
   
   BOOL res=BASS_Init(-1, 44100, 0, NULL, NULL);
+  BASS_SetConfig(BASS_CONFIG_UPDATETHREADS, 2);
   NSLog(@"Bass Init: %s",res?"OK":"NG");
   // Do any additional setup after loading the view.
 }

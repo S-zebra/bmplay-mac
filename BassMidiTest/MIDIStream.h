@@ -44,6 +44,4 @@
 -(void)SetVolume:(float)vol;
 -(void)SetMaxCpuLoad:(float)cpuLoad;
 -(void)SetMaxPp:(float)polyphony;
--(int)UpdateData;
--(float)GetUpdatedData:(int)address;
 @end

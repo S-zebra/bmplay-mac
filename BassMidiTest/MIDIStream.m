@@ -65,6 +65,7 @@ float data[512];
   }
   streamHandle=BASS_MIDI_StreamCreateFile(false, [[FilePath stringByRemovingPercentEncoding] UTF8String], 0, 0, streamFlags, 1);
   NSLog(@"%@ Result: %d", [FilePath stringByRemovingPercentEncoding], BASS_ErrorGetCode());
+  NSLog(@"Pointer: %X", streamHandle);
 
   //Get the song name
   BASS_MIDI_MARK mk;
@@ -87,7 +88,7 @@ float data[512];
     tks++;
   }
   numTracks=tks;
-
+  NSLog(@"%d", numTracks);
   return streamHandle!=0;
 }
 

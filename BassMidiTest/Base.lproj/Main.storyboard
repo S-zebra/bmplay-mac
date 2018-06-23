@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="XfG-lQ-9wD">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13529"/>
@@ -909,7 +909,7 @@
                                 </textFieldCell>
                             </textField>
                             <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZsP-cH-FBs">
-                                <rect key="frame" x="34" y="109" width="167" height="24"/>
+                                <rect key="frame" x="34" y="109" width="228" height="24"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <sliderCell key="cell" state="on" alignment="left" maxValue="200" doubleValue="100" tickMarkPosition="below" numberOfTickMarks="3" sliderType="linear" id="C12-sX-d09"/>
                                 <connections>
@@ -917,11 +917,11 @@
                                 </connections>
                             </slider>
                             <progressIndicator wantsLayer="YES" fixedFrame="YES" minValue="1" maxValue="32768" doubleValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="3B9-nA-FWw">
-                                <rect key="frame" x="49" y="83" width="156" height="20"/>
+                                <rect key="frame" x="49" y="83" width="211" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             </progressIndicator>
                             <progressIndicator wantsLayer="YES" fixedFrame="YES" minValue="1" maxValue="32768" doubleValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="OCy-VC-NnY">
-                                <rect key="frame" x="48" y="57" width="156" height="20"/>
+                                <rect key="frame" x="48" y="57" width="212" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             </progressIndicator>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fwy-qL-Bpm">
@@ -943,7 +943,7 @@
                                 </textFieldCell>
                             </textField>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0va-pM-MrK">
-                                <rect key="frame" x="379" y="215" width="87" height="32"/>
+                                <rect key="frame" x="372" y="215" width="94" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="push" title="Replace..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="z74-AE-qN3">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -954,9 +954,9 @@
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5sz-2I-Whj">
-                                <rect key="frame" x="22" y="33" width="83" height="18"/>
+                                <rect key="frame" x="22" y="33" width="130" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="check" title="Enable FX" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="uTl-Mx-cSH">
+                                <buttonCell key="cell" type="check" title="Enable Default FX" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="uTl-Mx-cSH">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -973,6 +973,17 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="a8Z-Zb-Vth">
+                                <rect key="frame" x="151" y="24" width="115" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Additional FX..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="kXs-ay-sY3">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <segue destination="mAl-na-6E5" kind="modal" id="eF7-wd-895"/>
+                                </connections>
+                            </button>
                         </subviews>
                     </view>
                     <connections>
@@ -998,6 +1009,92 @@
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="75" y="667"/>
+        </scene>
+        <!--Split View Controller-->
+        <scene sceneID="6vt-Lh-Yso">
+            <objects>
+                <splitViewController id="mAl-na-6E5" sceneMemberID="viewController">
+                    <splitViewItems>
+                        <splitViewItem id="cWQ-8V-qMb"/>
+                        <splitViewItem id="7hb-lI-Sii"/>
+                    </splitViewItems>
+                    <splitView key="splitView" dividerStyle="thin" vertical="YES" id="01a-KU-A56">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <connections>
+                            <outlet property="delegate" destination="mAl-na-6E5" id="bno-07-dHs"/>
+                        </connections>
+                    </splitView>
+                    <connections>
+                        <outlet property="splitView" destination="01a-KU-A56" id="iQk-u5-elP"/>
+                        <segue destination="i1I-GJ-i4P" kind="relationship" relationship="splitItems" id="JvK-0j-S14"/>
+                        <segue destination="mEe-Sw-W3E" kind="relationship" relationship="splitItems" id="Lau-Qg-0xz"/>
+                    </connections>
+                </splitViewController>
+                <customObject id="cPX-8v-J1P" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="627" y="667"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="bZR-Iv-XMq">
+            <objects>
+                <viewController id="i1I-GJ-i4P" sceneMemberID="viewController">
+                    <scrollView key="view" wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="26" horizontalPageScroll="10" verticalLineScroll="26" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="489-hp-EX8">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <clipView key="contentView" id="BdS-oQ-Aig">
+                            <rect key="frame" x="1" y="1" width="448" height="298"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="none" alternatingRowBackgroundColors="YES" columnSelection="YES" columnResizing="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="medium" id="iIb-A2-Ezn">
+                                    <rect key="frame" x="0.0" y="0.0" width="448" height="298"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <size key="intercellSpacing" width="3" height="2"/>
+                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                    <tableColumns>
+                                        <tableColumn width="200" minWidth="40" maxWidth="500" id="11c-AH-Q2s">
+                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Effects">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                            </tableHeaderCell>
+                                            <buttonCell key="dataCell" type="check" title="Check" bezelStyle="regularSquare" imagePosition="left" controlSize="small" inset="2" id="uCq-fv-H1I">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="smallSystem"/>
+                                            </buttonCell>
+                                            <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
+                                        </tableColumn>
+                                    </tableColumns>
+                                </tableView>
+                            </subviews>
+                        </clipView>
+                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="21J-m8-oWZ">
+                            <rect key="frame" x="1" y="283" width="448" height="16"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="1NE-fg-6bX">
+                            <rect key="frame" x="224" y="17" width="15" height="102"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                    </scrollView>
+                </viewController>
+                <customObject id="yFZ-Uq-pys" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1217" y="512"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="fjN-HW-gXM">
+            <objects>
+                <viewController id="mEe-Sw-W3E" sceneMemberID="viewController">
+                    <view key="view" id="k5Q-64-JZU">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </view>
+                </viewController>
+                <customObject id="Wry-ZY-uBv" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1217" y="881"/>
         </scene>
     </scenes>
 </document>
