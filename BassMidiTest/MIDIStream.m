@@ -9,6 +9,7 @@
 #import "MIDIStream.h"
 #import "bass.h"
 #import "bassmidi.h"
+#import <AudioToolbox/ExtendedAudioFile.h>
 
 @implementation MIDIStream
 
@@ -32,9 +33,11 @@ float data[512];
 +(unsigned int)HiWord:(unsigned int)Dword{
   return Dword&4294901760;
 }
+
 +(unsigned int)LoWord:(unsigned int)Dword{
   return Dword&65535;
 }
+
 -(BOOL)hasStream{
   return streamHandle!=0;
 }
@@ -58,7 +61,7 @@ float data[512];
 -(BOOL)Load:(NSString*)FilePath{
   float d;
   int tks=0;
-  
+
   //release old resource
   if(streamHandle!=0){
     BASS_StreamFree(streamHandle);
@@ -74,9 +77,14 @@ float data[512];
     self.songName=@"(NO TITLE)";
   }else{
     self.songName=[NSString stringWithFormat:@"%s", mk.text];
+    char* s;
+    for(s = &mk.text[0]; *s != '\0'; s++){
+      NSLog(@"0x%x", *s);
+    }
+
   }
-  
-  //If already soundfont is set
+
+  //If the stream already has a soundfont
   if(sfHandle!=0){
     [self SetSoundFont];
   }
@@ -88,7 +96,7 @@ float data[512];
     tks++;
   }
   numTracks=tks;
-  NSLog(@"%d", numTracks);
+  NSLog(@"%d tracks", numTracks);
   return streamHandle!=0;
 }
 
@@ -114,6 +122,7 @@ float data[512];
     BASS_MIDI_FontFree(sfHandle);
   }
 }
+
 -(void)LoadSoundFont:(NSString*)Path{
   NSLog(@"%s", [Path UTF8String]);
   sfHandle=BASS_MIDI_FontInit([Path UTF8String], 0);
@@ -156,6 +165,7 @@ float data[512];
   BASS_ChannelGetAttribute(streamHandle, BASS_ATTRIB_MIDI_VOICES_ACTIVE, &cv);
   return (NSInteger)cv;
 }
+
 -(void)SetVolume:(float)vol{
   sfVol=vol;
   NSLog(@"Volume is set to: %lf",vol);
@@ -164,19 +174,36 @@ float data[512];
 -(void)SetMaxCpuLoad:(float)cpuLoad{
   maxCpu=cpuLoad;
   BASS_ChannelSetAttribute(streamHandle, BASS_ATTRIB_MIDI_CPU, maxCpu);
-  NSLog(@"CPU Load is set to: %lf - %d",(float)cpuLoad,BASS_ErrorGetCode());
+  NSLog(@"CPU Load is set to: %lf - %d", (float)cpuLoad, BASS_ErrorGetCode());
 }
 -(void)SetMaxPp:(float)polyphony{
   maxPp=polyphony;
   BASS_ChannelSetAttribute(streamHandle, BASS_ATTRIB_MIDI_VOICES, maxPp);
 }
--(int)UpdateData{
-  int n=BASS_ChannelGetData(streamHandle,&data , BASS_DATA_FLOAT);
-  NSLog(@"BASS_UpdateData length: %d Error: %d",n,BASS_ErrorGetCode());
-  return n;
-}
--(float)GetUpdatedData:(int)address{
-  return data[address];
+-(void)Export:(NSString*)file{
+  [self SetCurrentPosition: 0];
+
+  AudioStreamBasicDescription format;
+  format.mFormatID = kAudioFormatLinearPCM;
+  format.mSampleRate = 44100;
+  format.mBitsPerChannel = 32;
+  format.mFormatFlags = kAudioFormatFlagIsFloat;
+  format.mChannelsPerFrame = 2;
+  format.mBytesPerFrame = 8;
+  format.mFramesPerPacket = 4;
+  format.mBytesPerPacket = format.mBytesPerFrame * format.mFramesPerPacket;
+
+  ExtAudioFileRef outRef = NULL;
+  OSStatus ref = ExtAudioFileCreateWithURL((__bridge CFURLRef)[NSURL fileURLWithPath:file],
+                                           kAudioFileWAVEType, &format, NULL, 0, &outRef);
+  SInt64 wroteBytes = 0;
+//  ExtAudioFileSetProperty(outRef, ExtAudioFilePropertyID inPropertyID, <#UInt32 inPropertyDataSize#>, <#const void * _Nonnull inPropertyData#>)
+  while(BASS_ErrorGetCode() == BASS_OK){
+    uint32 availableBytes = BASS_ChannelGetData(streamHandle, NULL, BASS_DATA_FLOAT);
+    uint8_t *data = (uint8_t *)malloc(availableBytes);
+
+    free(data);
+  }
 }
 
 @synthesize fullPath,fileName,songName,copyrightInfo;

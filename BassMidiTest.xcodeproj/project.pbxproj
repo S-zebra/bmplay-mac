@@ -7,21 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		642350A31EAD0232006B6362 /* libbass.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = 642350A21EAD0232006B6362 /* libbass.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		642350A51EAD023E006B6362 /* libbassmidi.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = 642350A41EAD023E006B6362 /* libbassmidi.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		642350A61EAD0248006B6362 /* libbass.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 642350A21EAD0232006B6362 /* libbass.dylib */; };
-		642350A71EAD024E006B6362 /* libbassmidi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 642350A41EAD023E006B6362 /* libbassmidi.dylib */; };
 		642350A91EAD6870006B6362 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 642350A81EAD6870006B6362 /* CoreMIDI.framework */; };
 		642350B11EAF3025006B6362 /* MIDIStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 642350B01EAF3025006B6362 /* MIDIStream.m */; };
 		642350B31EAF7224006B6362 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 642350B21EAF7224006B6362 /* main.m */; };
+		644DC46120EA6AC500507C3C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 644DC46020EA6AC500507C3C /* AudioToolbox.framework */; };
+		64585592210F1717007E6E86 /* libbass.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 642350A21EAD0232006B6362 /* libbass.dylib */; };
+		64585593210F1717007E6E86 /* libbassmidi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 644DC45C20EA69F100507C3C /* libbassmidi.dylib */; };
+		64585594210F1734007E6E86 /* libbassmidi.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = 644DC45C20EA69F100507C3C /* libbassmidi.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		64585595210F1734007E6E86 /* libbass.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = 642350A21EAD0232006B6362 /* libbass.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		64CD6C891EACEF8800DC95A1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 64CD6C881EACEF8800DC95A1 /* AppDelegate.m */; };
 		64CD6C8F1EACEF8800DC95A1 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 64CD6C8E1EACEF8800DC95A1 /* ViewController.m */; };
 		64CD6C911EACEF8800DC95A1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 64CD6C901EACEF8800DC95A1 /* Assets.xcassets */; };
 		64CD6C941EACEF8800DC95A1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 64CD6C921EACEF8800DC95A1 /* Main.storyboard */; };
 		64CD6C9F1EACEF8800DC95A1 /* BassMidiTestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 64CD6C9E1EACEF8800DC95A1 /* BassMidiTestTests.m */; };
 		64CD6CAA1EACEF8800DC95A1 /* BassMidiTestUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 64CD6CA91EACEF8800DC95A1 /* BassMidiTestUITests.m */; };
-		64FF3ECC1EB46B1600E4400B /* libbassmix.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = 64FF3ECB1EB46B1600E4400B /* libbassmix.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		64FF3ECD1EB46B2300E4400B /* libbassmix.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 64FF3ECB1EB46B1600E4400B /* libbassmix.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,9 +56,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
-				64FF3ECC1EB46B1600E4400B /* libbassmix.dylib in Copy Files */,
-				642350A51EAD023E006B6362 /* libbassmidi.dylib in Copy Files */,
-				642350A31EAD0232006B6362 /* libbass.dylib in Copy Files */,
+				64585594210F1734007E6E86 /* libbassmidi.dylib in Copy Files */,
+				64585595210F1734007E6E86 /* libbass.dylib in Copy Files */,
 			);
 			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -67,14 +65,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		642350981EAD0157006B6362 /* libbass.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbass.dylib; path = "../../../../../../Documents/libraries/bass24-osx/libbass.dylib"; sourceTree = "<group>"; };
-		6423509A1EAD015D006B6362 /* libbassmidi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbassmidi.dylib; path = "../../../../../../Documents/libraries/bassmidi24-osx/libbassmidi.dylib"; sourceTree = "<group>"; };
 		642350A21EAD0232006B6362 /* libbass.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libbass.dylib; sourceTree = "<group>"; };
-		642350A41EAD023E006B6362 /* libbassmidi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libbassmidi.dylib; sourceTree = "<group>"; };
 		642350A81EAD6870006B6362 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
 		642350AF1EAF3025006B6362 /* MIDIStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIDIStream.h; sourceTree = "<group>"; };
 		642350B01EAF3025006B6362 /* MIDIStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIDIStream.m; sourceTree = "<group>"; wrapsLines = 0; };
 		642350B21EAF7224006B6362 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		644DC45C20EA69F100507C3C /* libbassmidi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libbassmidi.dylib; sourceTree = "<group>"; };
+		644DC46020EA6AC500507C3C /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		64CD6C841EACEF8800DC95A1 /* BassMidiTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BassMidiTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		64CD6C871EACEF8800DC95A1 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		64CD6C881EACEF8800DC95A1 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -89,7 +86,6 @@
 		64CD6CA51EACEF8800DC95A1 /* BassMidiTestUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BassMidiTestUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		64CD6CA91EACEF8800DC95A1 /* BassMidiTestUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BassMidiTestUITests.m; sourceTree = "<group>"; };
 		64CD6CAB1EACEF8800DC95A1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		64FF3ECB1EB46B1600E4400B /* libbassmix.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libbassmix.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,10 +93,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				64FF3ECD1EB46B2300E4400B /* libbassmix.dylib in Frameworks */,
+				64585592210F1717007E6E86 /* libbass.dylib in Frameworks */,
+				64585593210F1717007E6E86 /* libbassmidi.dylib in Frameworks */,
+				644DC46120EA6AC500507C3C /* AudioToolbox.framework in Frameworks */,
 				642350A91EAD6870006B6362 /* CoreMIDI.framework in Frameworks */,
-				642350A71EAD024E006B6362 /* libbassmidi.dylib in Frameworks */,
-				642350A61EAD0248006B6362 /* libbass.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -124,8 +120,7 @@
 		64CD6C7B1EACEF8800DC95A1 = {
 			isa = PBXGroup;
 			children = (
-				64FF3ECB1EB46B1600E4400B /* libbassmix.dylib */,
-				642350A41EAD023E006B6362 /* libbassmidi.dylib */,
+				644DC45C20EA69F100507C3C /* libbassmidi.dylib */,
 				642350A21EAD0232006B6362 /* libbass.dylib */,
 				64CD6C861EACEF8800DC95A1 /* BassMidiTest */,
 				64CD6C9D1EACEF8800DC95A1 /* BassMidiTestTests */,
@@ -191,9 +186,8 @@
 		64CD6CB71EACEFAE00DC95A1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				644DC46020EA6AC500507C3C /* AudioToolbox.framework */,
 				642350A81EAD6870006B6362 /* CoreMIDI.framework */,
-				6423509A1EAD015D006B6362 /* libbassmidi.dylib */,
-				642350981EAD0157006B6362 /* libbass.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

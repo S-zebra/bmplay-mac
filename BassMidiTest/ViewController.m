@@ -24,11 +24,11 @@ NSArray *typeMidi,*typeSF2;
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-  
+
   typeMidi=[NSArray arrayWithObjects:@"mid",@"midi" ,nil];
   typeSF2=[NSArray arrayWithObjects:@"sf2",@"sfz", nil];
   openWindow=[NSOpenPanel new];
-  
+
   BOOL res=BASS_Init(-1, 44100, 0, NULL, NULL);
   BASS_SetConfig(BASS_CONFIG_UPDATETHREADS, 2);
   NSLog(@"Bass Init: %s",res?"OK":"NG");
@@ -37,11 +37,11 @@ NSArray *typeMidi,*typeSF2;
 
 -(IBAction)MidiFileOpenBtnClicked:(id)sender{
   [openWindow setAllowedFileTypes: typeMidi];
-  
+
   NSURL *filePath;
   NSString *fpString;
-  if([openWindow runModal]==NSModalResponseOK){
-    filePath =[openWindow URL];
+  if ([openWindow runModal] == NSModalResponseOK) {
+    filePath = [openWindow URL];
     fpString=[filePath.absoluteString stringByReplacingOccurrencesOfString:@"file://" withString:@""];
 
     if(![myStream hasStream]){
@@ -50,7 +50,7 @@ NSArray *typeMidi,*typeSF2;
     [myStream Load:fpString];
 
     if([myStream hasStream]){
-      //On Success
+      // On Success
       [MidiFilePathLbl setStringValue:[NSString stringWithFormat:@"%@ - %@",myStream.songName,[filePath lastPathComponent]]];
     }else{
       //On Error
@@ -129,9 +129,9 @@ NSArray *typeMidi,*typeSF2;
   curpp=(long)[myStream GetCurrentPolyphony];
   curcpu=(long)[myStream GetCurrentCpuLoad];
   int pos=(int)[myStream GetCurrentPosition];
-  
+
   [SongPositionSlider setIntValue:pos];
-  
+
   [Level_L setDoubleValue:(double)abs(LoWord(lev))];
   [Level_R setDoubleValue:(double)abs(HiWord(lev))];
   [PpCurLbl setStringValue:[NSString stringWithFormat:@"%ld",curpp]];
@@ -144,7 +144,7 @@ NSArray *typeMidi,*typeSF2;
   [PlayPauseBtn setState:NSOffState];
   [myStream StopAndRewind];
   [_timer invalidate];
-  
+
   [SongPositionSlider setDoubleValue:0.0];
   [PpCurLbl setStringValue:[NSString stringWithFormat:@"%d",0]];
   [CpuCurLbl setStringValue:[NSString stringWithFormat:@"%d",0]];

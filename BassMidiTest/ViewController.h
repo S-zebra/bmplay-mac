@@ -30,6 +30,7 @@
   IBOutlet NSTextField *CurVolLbl;
   IBOutlet NSSlider *VolSlider;
   IBOutlet NSButton *FXCheckBox;
+  IBOutlet NSTableColumn *EffectsList;
 }
 -(IBAction)MidiFileOpenBtnClicked;
 -(IBAction)SfReplaceBtnClicked;
