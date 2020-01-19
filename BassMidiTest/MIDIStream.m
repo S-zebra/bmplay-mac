@@ -125,6 +125,9 @@ float data[512];
 
 -(void)LoadSoundFont:(NSString*)Path{
   NSLog(@"%s", [Path UTF8String]);
+  if (sfHandle != 0) {
+    BASS_MIDI_FontFree(sfHandle);
+  }
   sfHandle=BASS_MIDI_FontInit([Path UTF8String], 0);
   BASS_MIDI_FontGetInfo(sfHandle, &SFInfo);
   _SoundFontInfo=&SFInfo;
@@ -138,6 +141,7 @@ float data[512];
     SoundFonts[0].bank=0;
     [self SetVolume:sfVol];
     if(streamHandle!=0){
+      BASS_MIDI_FontLoad(sfHandle, -1, -1);
       return BASS_MIDI_StreamSetFonts(streamHandle, &SoundFonts, 1);
     }else{
       return 1;
