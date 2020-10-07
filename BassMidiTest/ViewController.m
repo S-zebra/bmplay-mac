@@ -21,6 +21,8 @@ MIDIStream *myStream;
 NSTimer *_timer;
 NSOpenPanel *openWindow;
 NSArray *typeMidi,*typeSF2;
+bool exporting = false;
+NSInteger PreviousCPULimit;
 
 - (void)viewDidLoad {
   [super viewDidLoad];
@@ -32,6 +34,7 @@ NSArray *typeMidi,*typeSF2;
   BOOL res=BASS_Init(-1, 44100, 0, NULL, NULL);
   BASS_SetConfig(BASS_CONFIG_UPDATETHREADS, 2);
   NSLog(@"Bass Init: %s",res?"OK":"NG");
+  PreviousCPULimit = [CpuMaxSlider intValue];
   // Do any additional setup after loading the view.
 }
 
@@ -58,6 +61,7 @@ NSArray *typeMidi,*typeSF2;
       NSLog(@"Bass error code: %d",BASS_ErrorGetCode());
     }
     [SongPositionSlider setMaxValue:[myStream GetStreamLength]];
+    [PBExport setMaxValue:[myStream GetStreamLengthBytes]];
   }
 }
 
@@ -91,15 +95,20 @@ NSArray *typeMidi,*typeSF2;
   [myStream SetMaxPp:a];
 }
 
--(IBAction)CpuMaxSliderSlided:(id)sender{
-  int a=[CpuMaxSlider doubleValue];
-  if(a==101){
+-(void)ApplyCpuMaxLoad:(NSInteger)value{
+  [CpuMaxSlider setFloatValue:value];
+  if(value == 101){
     [CpuMaxLbl setStringValue:@"--"];
     [myStream SetMaxCpuLoad:0];
   }else{
-    [CpuMaxLbl setStringValue:[NSString stringWithFormat:@"%d",a]];
-    [myStream SetMaxCpuLoad:a];
+    [CpuMaxLbl setStringValue:[NSString stringWithFormat:@"%ld", value]];
+    [myStream SetMaxCpuLoad:value];
   }
+}
+-(IBAction)CpuMaxSliderSlided:(id)sender{
+  NSInteger sliderValue = [CpuMaxSlider intValue];
+  [self ApplyCpuMaxLoad:sliderValue];
+  PreviousCPULimit = sliderValue;
 }
 
 -(IBAction)PlayPauseBtnToggled:(id)sender{
@@ -124,20 +133,25 @@ NSArray *typeMidi,*typeSF2;
 }
 
 -(IBAction)time:(NSTimer*)timer{
-  long curpp,curcpu;
+  long curpp;
   unsigned int lev=[myStream GetLevel];
   curpp=(long)[myStream GetCurrentPolyphony];
-  curcpu=(long)[myStream GetCurrentCpuLoad];
-  int pos=(int)[myStream GetCurrentPosition];
-
-  [SongPositionSlider setIntValue:pos];
+  float curcpu = [myStream GetCurrentCpuLoad];
+  [PBExport setDoubleValue:[myStream GetCurrentPositionBytes]];
+  [SongPositionSlider setDoubleValue:[myStream GetCurrentPosition]];
 
   [Level_L setDoubleValue:(double)abs(LoWord(lev))];
   [Level_R setDoubleValue:(double)abs(HiWord(lev))];
   [PpCurLbl setStringValue:[NSString stringWithFormat:@"%ld",curpp]];
-  [CpuCurLbl setStringValue:[NSString stringWithFormat:@"%ld",curcpu]];
+  [CpuCurLbl setStringValue:[NSString stringWithFormat:@"%d", (int)curcpu]];
   [PpCurBar setDoubleValue:(double)curpp];
   [CpuCurBar setDoubleValue:(double)curcpu];
+  NSLog(@"Byte Position: %ld, Length: %ld", [myStream GetCurrentPositionBytes], [myStream GetStreamLengthBytes]);
+  NSLog(@"Position: %ld, Length: %ld", [myStream GetCurrentPosition], [myStream GetStreamLength]);
+  if((exporting && [myStream GetLastError] == BASS_ERROR_ENDED) ||
+     ([myStream GetCurrentPositionBytes] == [myStream GetStreamLengthBytes])){
+    [self StopBtnClicked:nil];
+  }
 }
 
 -(IBAction)StopBtnClicked:(id)sender{
@@ -152,6 +166,16 @@ NSArray *typeMidi,*typeSF2;
   [CpuCurBar setDoubleValue:0.0];
   [Level_L setDoubleValue:0.0];
   [Level_R setDoubleValue:0.0];
+  [PositionLabel setStringValue:@"Position"];
+  [SongPositionSlider setHidden:false];
+  [PBExport setHidden:true];
+  [ExportButton setEnabled:true];
+  [PlayPauseBtn setEnabled:true];
+  [StopButton setEnabled:true];
+  [MIDIFileOpenButton setEnabled:true];
+  [SFReplaceButton setEnabled:true];
+  exporting = false;
+  [self ApplyCpuMaxLoad:PreviousCPULimit];
 }
 -(IBAction)FXCheckChanged:(id)sender{
   if([FXCheckBox state]==NSOnState){
@@ -162,12 +186,51 @@ NSArray *typeMidi,*typeSF2;
     NSLog(@"FX Off");
   }
 }
+-(void)ExportTimerTicked:(NSTimer*)timer {
+  [self time:_timer];
+  NSInteger ErrCode = [myStream GetLastError];
+  if (ErrCode != noErr) {
+    NSAlert* dialog = [NSAlert new];
+    [dialog setMessageText:@"Export Failed"];
+    [dialog setInformativeText:[NSString stringWithFormat:@"Error %ld has occurred.", (long)ErrCode]];
+    [dialog setAlertStyle:NSAlertStyleCritical];
+    [dialog runModal];
+  }
+}
+-(IBAction)ExportBtnClicked:(id)sender{
+  NSSavePanel* savePanel = [NSSavePanel new];
+  [savePanel setAllowedFileTypes:[NSArray arrayWithObjects: @"wav", nil]];
+  if([savePanel runModal] != NSModalResponseOK){
+    return;
+  }
+  [ExportButton setEnabled:false];
+  [PlayPauseBtn setEnabled:false];
+  [StopButton setEnabled:false];
+  [MIDIFileOpenButton setEnabled:false];
+  [SFReplaceButton setEnabled:false];
+  [self ApplyCpuMaxLoad:101];
+  [myStream SetMaxPp:[PpMaxSlider intValue]];
+  [myStream performSelectorInBackground:@selector(Export:) withObject:[savePanel URL]];
+  exporting = true;
+  [SongPositionSlider setHidden:true];
+  [PBExport setHidden:false];
+  [PositionLabel setStringValue:@"Progress"];
+  _timer = [NSTimer scheduledTimerWithTimeInterval:0.064 target:self
+                                          selector:@selector(time:)
+                                          userInfo:nil repeats:true];
+}
+- (IBAction)PpExtendChanged:(id)sender {
+  if([PpExtendCheck state] == NSOnState){
+    [PpMaxSlider setMaxValue:50000];
+  }else{
+    [PpMaxSlider setMaxValue:1000];
+    [self PpMaxSliderSlided:nil];
+  }
+}
 
 - (void)setRepresentedObject:(id)representedObject {
   [super setRepresentedObject:representedObject];
 
   // Update the view, if already loaded.
 }
-
-
 @end

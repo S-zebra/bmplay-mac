@@ -25,6 +25,7 @@ float sfVol=1.0;
 float maxCpu=70;
 float maxPp=100;
 float data[512];
+NSInteger lastErrorCode;
 
 +(id)initMyClass{
   return [[self alloc] init];
@@ -161,8 +162,16 @@ float data[512];
 -(NSInteger)GetStreamLength{
   return BASS_ChannelGetLength(streamHandle, BASS_POS_MIDI_TICK)/120;
 }
--(NSInteger)GetCurrentCpuLoad{
-  return BASS_GetCPU();
+-(NSInteger)GetCurrentPositionBytes{
+  return BASS_ChannelGetPosition(streamHandle, BASS_POS_BYTE);
+}
+-(NSInteger)GetStreamLengthBytes{
+  return BASS_ChannelGetLength(streamHandle, BASS_POS_BYTE);
+}
+-(float)GetCurrentCpuLoad{
+  float load = 0.0;
+  BASS_ChannelGetAttribute(streamHandle, BASS_ATTRIB_CPU, &load);
+  return load;
 }
 -(NSInteger)GetCurrentPolyphony{
   float cv = 0.0;
@@ -184,30 +193,68 @@ float data[512];
   maxPp=polyphony;
   BASS_ChannelSetAttribute(streamHandle, BASS_ATTRIB_MIDI_VOICES, maxPp);
 }
--(void)Export:(NSString*)file{
+-(NSInteger)GetLastError{
+  return lastErrorCode;
+}
+-(NSInteger)Export:(NSURL*)file{
   [self SetCurrentPosition: 0];
 
   AudioStreamBasicDescription format;
   format.mFormatID = kAudioFormatLinearPCM;
   format.mSampleRate = 44100;
   format.mBitsPerChannel = 32;
-  format.mFormatFlags = kAudioFormatFlagIsFloat;
+  format.mFormatFlags = kAudioFormatFlagIsFloat | kLinearPCMFormatFlagIsPacked;
   format.mChannelsPerFrame = 2;
   format.mBytesPerFrame = 8;
-  format.mFramesPerPacket = 4;
+  format.mFramesPerPacket = 1; // 1 for PCM
   format.mBytesPerPacket = format.mBytesPerFrame * format.mFramesPerPacket;
 
   ExtAudioFileRef outRef = NULL;
-  OSStatus ref = ExtAudioFileCreateWithURL((__bridge CFURLRef)[NSURL fileURLWithPath:file],
-                                           kAudioFileWAVEType, &format, NULL, 0, &outRef);
-  SInt64 wroteBytes = 0;
-//  ExtAudioFileSetProperty(outRef, ExtAudioFilePropertyID inPropertyID, <#UInt32 inPropertyDataSize#>, <#const void * _Nonnull inPropertyData#>)
-  while(BASS_ErrorGetCode() == BASS_OK){
-    uint32 availableBytes = BASS_ChannelGetData(streamHandle, NULL, BASS_DATA_FLOAT);
-    uint8_t *data = (uint8_t *)malloc(availableBytes);
-
-    free(data);
+  lastErrorCode = ExtAudioFileCreateWithURL((__bridge CFURLRef)file, kAudioFileWAVEType, &format,
+                                                  NULL, 0, &outRef);
+  if (lastErrorCode != noErr){
+    NSError *error = [NSError errorWithDomain:NSOSStatusErrorDomain
+                                         code:lastErrorCode userInfo:nil];
+    NSLog(@"Cannot open output file: %@", [error description]);
+    return lastErrorCode;
   }
+  SInt64 wroteBytes = 0;
+  BASS_ChannelUpdate(streamHandle, 0);
+  uint32 availableBytes;
+  uint8_t* buffer = NULL;
+  int64_t curPos = 0;
+  while((lastErrorCode = (NSInteger)BASS_ErrorGetCode()) == 0){
+    BASS_ChannelUpdate(streamHandle, 0);
+    availableBytes = BASS_ChannelGetData(streamHandle, NULL, BASS_DATA_AVAILABLE);
+    printf("%u bytes available\n", availableBytes);
+    buffer = (uint8_t *)realloc(buffer, availableBytes); // realloc for NULL is equivalent to malloc
+    if(buffer == NULL){
+      fprintf(stderr, "Cannot allocate memory for buffer!\n");
+      free(buffer);
+      ExtAudioFileDispose(outRef);
+      lastErrorCode = (NSInteger)errno;
+      return lastErrorCode;
+    }
+    memset(buffer, 0, availableBytes);
+    BASS_ChannelGetData(streamHandle, buffer, availableBytes);
+    AudioBufferList bufList;
+    bufList.mNumberBuffers = 1;
+    bufList.mBuffers[0].mNumberChannels = 2;
+    bufList.mBuffers[0].mDataByteSize = availableBytes;
+    bufList.mBuffers[0].mData = buffer;
+    lastErrorCode = ExtAudioFileWrite(outRef, availableBytes / 8, &bufList);
+    if(lastErrorCode != noErr) {
+      NSError* error = [NSError errorWithDomain:NSOSStatusErrorDomain
+                                           code:lastErrorCode userInfo:nil];
+      NSLog(@"Write error: %@", [error description]);
+      return lastErrorCode;
+    }
+    curPos = BASS_ChannelGetPosition(streamHandle, BASS_POS_BYTE);
+    BASS_ChannelSetPosition(streamHandle, curPos + availableBytes, BASS_POS_BYTE | BASS_POS_DECODETO);
+  }
+  free(buffer);
+  ExtAudioFileDispose(outRef);
+  return lastErrorCode;
 }
 
 @synthesize fullPath,fileName,songName,copyrightInfo;

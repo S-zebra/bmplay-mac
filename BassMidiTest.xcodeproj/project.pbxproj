@@ -21,7 +21,6 @@
 		64CD6C941EACEF8800DC95A1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 64CD6C921EACEF8800DC95A1 /* Main.storyboard */; };
 		64CD6C9F1EACEF8800DC95A1 /* BassMidiTestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 64CD6C9E1EACEF8800DC95A1 /* BassMidiTestTests.m */; };
 		64CD6CAA1EACEF8800DC95A1 /* BassMidiTestUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 64CD6CA91EACEF8800DC95A1 /* BassMidiTestUITests.m */; };
-		64F2A7F3237D97DE001C94A2 /* FXWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 64F2A7F2237D97DE001C94A2 /* FXWindowController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,8 +86,6 @@
 		64CD6CA51EACEF8800DC95A1 /* BassMidiTestUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BassMidiTestUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		64CD6CA91EACEF8800DC95A1 /* BassMidiTestUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BassMidiTestUITests.m; sourceTree = "<group>"; };
 		64CD6CAB1EACEF8800DC95A1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		64F2A7F1237D97DE001C94A2 /* FXWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FXWindowController.h; path = ../FXWindowController.h; sourceTree = "<group>"; };
-		64F2A7F2237D97DE001C94A2 /* FXWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = FXWindowController.m; path = ../FXWindowController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,8 +143,6 @@
 		64CD6C861EACEF8800DC95A1 /* BassMidiTest */ = {
 			isa = PBXGroup;
 			children = (
-				64F2A7F1237D97DE001C94A2 /* FXWindowController.h */,
-				64F2A7F2237D97DE001C94A2 /* FXWindowController.m */,
 				64CD6C871EACEF8800DC95A1 /* AppDelegate.h */,
 				64CD6C881EACEF8800DC95A1 /* AppDelegate.m */,
 				64CD6C8D1EACEF8800DC95A1 /* ViewController.h */,
@@ -334,7 +329,6 @@
 			files = (
 				64CD6C8F1EACEF8800DC95A1 /* ViewController.m in Sources */,
 				642350B11EAF3025006B6362 /* MIDIStream.m in Sources */,
-				64F2A7F3237D97DE001C94A2 /* FXWindowController.m in Sources */,
 				642350B31EAF7224006B6362 /* main.m in Sources */,
 				64CD6C891EACEF8800DC95A1 /* AppDelegate.m in Sources */,
 			);

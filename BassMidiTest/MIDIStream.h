@@ -37,11 +37,15 @@
 -(BOOL)SetSoundFont;
 //-(void)GetSoundFontInfo;
 -(NSInteger)GetCurrentPosition;
+-(NSInteger)GetCurrentPositionBytes;
 -(NSInteger)GetStreamLength;
+-(NSInteger)GetStreamLengthBytes;
 -(NSInteger)SetCurrentPosition:(int)val;
--(NSInteger)GetCurrentCpuLoad;
+-(float)GetCurrentCpuLoad;
 -(NSInteger)GetCurrentPolyphony;
 -(void)SetVolume:(float)vol;
 -(void)SetMaxCpuLoad:(float)cpuLoad;
 -(void)SetMaxPp:(float)polyphony;
+-(NSInteger)Export:(NSURL *_Nonnull)file;
+-(NSInteger)GetLastError;
 @end
