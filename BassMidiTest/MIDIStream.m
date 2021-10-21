@@ -75,7 +75,7 @@ NSInteger lastErrorCode;
   BASS_MIDI_MARK mk;
   BASS_MIDI_StreamGetMark(streamHandle, BASS_MIDI_MARK_TRACK, 0, &mk);
   if(mk.text==NULL||strlen(mk.text)==0){
-    self.songName=@"(NO TITLE)";
+    self.songName=NULL;
   }else{
     unsigned char* s;
     printf("Title dump: ");

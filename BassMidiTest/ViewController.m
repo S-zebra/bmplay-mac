@@ -55,7 +55,11 @@ NSInteger PreviousCPULimit;
     if([myStream hasStream]){
       // On Success
       NSLog(@"%@", myStream.songName);
-      [MidiFilePathLbl setStringValue:[NSString stringWithFormat:@"%@ - %@",myStream.songName,[filePath lastPathComponent]]];
+      if(myStream.songName != NULL) {
+        [MidiFilePathLbl setStringValue:[NSString stringWithFormat:@"%@ - %@",myStream.songName,[filePath lastPathComponent]]];
+      } else {
+        [MidiFilePathLbl setStringValue:[NSString stringWithFormat:@"%@",[filePath lastPathComponent]]];
+      }
     }else{
       //On Error
       [MidiFilePathLbl setStringValue:[@"Error: " stringByAppendingString:[NSString stringWithFormat: @"%d",BASS_ErrorGetCode()]]];
