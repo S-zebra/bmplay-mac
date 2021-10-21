@@ -836,7 +836,7 @@
                                 </connections>
                             </slider>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xeq-Q4-30k">
-                                <rect key="frame" x="98" y="222" width="109" height="16"/>
+                                <rect key="frame" x="98" y="222" width="272" height="16"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingMiddle" sendsActionOnEndEditing="YES" title="SoundFont Name" id="ull-75-eO6">
                                     <font key="font" metaFont="system"/>

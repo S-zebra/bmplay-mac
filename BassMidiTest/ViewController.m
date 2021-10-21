@@ -71,21 +71,25 @@ NSInteger PreviousCPULimit;
   NSURL *Url;
   NSString *Path;
   BASS_MIDI_FONTINFO *fi;
-  if([openWindow runModal]==NSModalResponseOK){
-    Url=openWindow.URL;
-    Path=[[Url.absoluteString stringByReplacingOccurrencesOfString:@"file://" withString:@""] stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
-    if(myStream==nil){
-      myStream=[MIDIStream new];
-    }
-    [myStream LoadSoundFont:Path];
-    fi=myStream.SoundFontInfo;
-
-    if (BASS_ErrorGetCode()==0){
-      [SfNameLbl setStringValue:[NSString stringWithCString: fi->name encoding:NSUTF8StringEncoding]];
-      NSLog(@"SoundFont OK,　name: %s, loaded %d",fi->name,fi->samload);
-    }else{
-      NSLog(@"SoundFont Error: %d",BASS_ErrorGetCode());
-    }
+  if([openWindow runModal] != NSModalResponseOK){
+    return;
+  }
+  Url=openWindow.URL;
+  Path=[[Url.absoluteString stringByReplacingOccurrencesOfString:@"file://" withString:@""] stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
+  if(myStream==nil){
+    myStream=[MIDIStream new];
+  }
+  [myStream LoadSoundFont:Path];
+  fi=myStream.SoundFontInfo;
+  if (BASS_ErrorGetCode()!=0){
+    NSLog(@"SoundFont Error: %d",BASS_ErrorGetCode());
+    return;
+  }
+  if(fi->name != NULL){
+    [SfNameLbl setStringValue:[NSString stringWithCString: fi->name encoding:NSUTF8StringEncoding]];
+    NSLog(@"SoundFont OK,　name: %s, loaded %d",fi->name,fi->samload);
+  } else {
+    [SfNameLbl setStringValue: Path.lastPathComponent];
   }
 }
 
