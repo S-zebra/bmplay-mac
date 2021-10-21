@@ -77,14 +77,16 @@ NSInteger lastErrorCode;
   if(mk.text==NULL||strlen(mk.text)==0){
     self.songName=@"(NO TITLE)";
   }else{
-    self.songName=[NSString stringWithFormat:@"%s", mk.text];
-    char* s;
+    unsigned char* s;
+    printf("Title dump: ");
+
     for(s = &mk.text[0]; *s != '\0'; s++){
-      NSLog(@"0x%x", *s);
+      printf("%x ", *s);
     }
-
+    puts("");
+    self.songName = [NSString stringWithCString:mk.text encoding:NSShiftJISStringEncoding];
   }
-
+  NSLog(@"%@", self.songName);
   //If the stream already has a soundfont
   if(sfHandle!=0){
     [self SetSoundFont];
