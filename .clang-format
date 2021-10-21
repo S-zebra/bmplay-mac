@@ -1,0 +1,7 @@
+Language: ObjC
+IndentWidth: 2
+PointerAlignment: Left
+ObjCBlockIndentWidth: 2
+BraceBreakingStyle: Attach
+SpaceBeforeParensOptions: ControlStatements
+SpaceBeforeAssignmentOperators: true
